@@ -1,0 +1,1427 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Project Abhaya | AI Women's Healthcare</title>
+
+
+<link rel="stylesheet" href="style.css">
+
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+
+</head>
+
+
+<body>
+
+
+
+<!-- NAVBAR -->
+
+<nav>
+
+
+<div class="logo">
+
+🌸 Abhaya
+
+</div>
+
+
+
+<div class="nav-links">
+
+
+<a href="#dashboard">
+Dashboard
+</a>
+
+
+<a href="#cycle">
+Cycle
+</a>
+
+
+<a href="#wellness">
+Wellness
+</a>
+
+
+<a href="#community">
+Community
+</a>
+
+
+<a href="#experts">
+Experts
+</a>
+
+
+</div>
+
+
+
+<button onclick="openAssessment()">
+
+Health Check
+
+</button>
+
+
+
+</nav>
+
+
+
+
+
+
+
+<!-- HERO SECTION -->
+
+
+<section class="hero">
+
+
+
+<div class="hero-text">
+
+
+<p class="badge">
+
+AI POWERED WOMEN'S HEALTHCARE
+
+</p>
+
+
+
+<h1>
+
+Understand Your Body.
+
+<br>
+
+Improve Your Health.
+
+<br>
+
+<span>
+With AI.
+</span>
+
+
+</h1>
+
+
+
+<p>
+
+Project Abhaya is an intelligent healthcare ecosystem
+for menstrual tracking, PCOS awareness, mental wellness,
+personalized recommendations and expert guidance.
+
+</p>
+
+
+
+<div class="hero-buttons">
+
+
+<button onclick="openAssessment()">
+
+Analyze Health
+
+</button>
+
+
+
+<button class="secondary">
+
+Explore Abhaya
+
+</button>
+
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+<div class="hero-image">
+
+
+<div class="ai-orb">
+
+🌸
+
+</div>
+
+
+
+<div class="floating-box box1">
+
+🩸
+
+<br>
+
+Cycle Prediction
+
+<br>
+
+<b>
+
+12 Days
+
+</b>
+
+
+</div>
+
+
+
+<div class="floating-box box2">
+
+🧬
+
+<br>
+
+PCOS Risk
+
+<br>
+
+<b>
+
+Low
+
+</b>
+
+
+</div>
+
+
+
+<div class="floating-box box3">
+
+💗
+
+<br>
+
+Mood AI
+
+<br>
+
+<b>
+
+Stable
+
+</b>
+
+
+</div>
+
+
+
+</div>
+
+
+
+</section>
+
+
+
+
+
+
+
+
+<!-- STATISTICS -->
+
+
+<section class="stats">
+
+
+<div class="stat-card">
+
+<h2>
+
+250M+
+
+</h2>
+
+<p>
+
+Women of reproductive age
+
+</p>
+
+</div>
+
+
+
+<div class="stat-card">
+
+<h2>
+
+1 in 5
+
+</h2>
+
+<p>
+
+Women affected by PCOS
+
+</p>
+
+</div>
+
+
+
+<div class="stat-card">
+
+<h2>
+
+57%
+
+</h2>
+
+<p>
+
+Women affected by anemia
+
+</p>
+
+</div>
+
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<!-- HEALTH ASSESSMENT POPUP -->
+
+
+<div id="popup">
+
+
+
+<div class="assessment-card">
+
+
+
+<h2>
+
+🌸 Health Assessment
+
+</h2>
+
+
+
+
+<label>
+
+Age
+
+</label>
+
+
+<input 
+id="age"
+type="number"
+placeholder="Enter your age">
+
+
+
+
+
+
+<label>
+
+Cycle Pattern
+
+</label>
+
+
+
+<select id="cycle">
+
+
+<option value="regular">
+
+Regular
+
+</option>
+
+
+<option value="irregular">
+
+Irregular
+
+</option>
+
+
+</select>
+
+
+
+
+
+
+<label>
+
+Symptoms
+
+</label>
+
+
+
+
+<div class="symptom">
+
+<input id="acne" type="checkbox">
+
+<span>
+
+Acne
+
+</span>
+
+</div>
+
+
+
+
+
+<div class="symptom">
+
+<input id="hair" type="checkbox">
+
+<span>
+
+Hair Loss
+
+</span>
+
+</div>
+
+
+
+
+
+
+<div class="symptom">
+
+<input id="pain" type="checkbox">
+
+<span>
+
+Severe Pain
+
+</span>
+
+</div>
+
+
+
+
+
+
+
+<div class="symptom">
+
+<input id="weight" type="checkbox">
+
+<span>
+
+Weight Changes
+
+</span>
+
+</div>
+
+
+
+
+
+
+
+<button onclick="generateReport()">
+
+Generate AI Report
+
+</button>
+
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<!-- DASHBOARD -->
+
+
+<section id="dashboard">
+
+
+<h2 class="title">
+Personal Health Dashboard
+</h2>
+
+
+<div class="dashboard">
+
+
+
+<div class="dashboard-card">
+
+
+<h3>
+Health Score
+</h3>
+
+
+<div class="health-score" id="score">
+
+92%
+
+</div>
+
+
+<p>
+AI Wellness Index
+</p>
+
+
+</div>
+
+
+
+
+
+
+<div class="dashboard-card">
+
+
+<h3>
+Cycle Status
+</h3>
+
+
+<div class="status-circle">
+
+🟢
+
+</div>
+
+
+<h2 class="healthy">
+Healthy
+</h2>
+
+
+<div class="info-pill">
+
+🩸 Next Period: 12 days
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="dashboard-card">
+
+
+<h3>
+PCOS Prediction
+</h3>
+
+
+
+<div class="risk-meter">
+
+
+<div class="risk-fill"></div>
+
+
+</div>
+
+
+
+<h2 class="low-risk">
+
+Low Risk
+
+</h2>
+
+
+<div class="info-pill">
+
+🧬 AI Symptom Analysis
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+<div class="dashboard-card">
+
+
+<h3>
+Mood Analysis
+</h3>
+
+
+
+
+<div class="mood-circle">
+
+
+65%
+
+</div>
+
+
+
+
+<h2>
+
+Stable
+
+</h2>
+
+
+
+<div class="info-pill">
+
+💗 Stress Monitoring
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+
+<!-- CYCLE TRACKER -->
+
+
+<section id="cycle">
+
+
+<h2 class="title">
+
+Smart Cycle Intelligence
+
+</h2>
+
+
+
+
+<div class="cycle-container">
+
+
+
+<div class="calendar">
+
+
+<h2>
+
+July 2026
+
+</h2>
+
+
+
+<div class="days">
+
+
+<span>
+1
+</span>
+
+<span>
+2
+</span>
+
+<span>
+3
+</span>
+
+<span class="period">
+4
+</span>
+
+
+<span class="period">
+5
+</span>
+
+
+<span>
+6
+</span>
+
+
+<span>
+7
+</span>
+
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<div class="prediction">
+
+
+<h3>
+
+AI Predictions
+
+</h3>
+
+
+<p>
+
+🩸 Period:
+<b>
+12 August
+</b>
+
+</p>
+
+
+
+<p>
+
+🥚 Ovulation:
+<b>
+26 July
+</b>
+
+</p>
+
+
+
+<p>
+
+Cycle Length:
+<b>
+28 Days
+</b>
+
+</p>
+
+
+</div>
+
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<!-- WELLNESS -->
+
+
+<section id="wellness">
+
+
+<h2 class="title">
+
+AI Wellness Engine
+
+</h2>
+
+
+
+<div class="cards">
+
+
+
+<div class="feature">
+
+🥗
+
+<h3>
+
+Nutrition
+
+</h3>
+
+
+<p>
+
+Personalized diet plans
+
+</p>
+
+
+</div>
+
+
+
+
+<div class="feature">
+
+🏃
+
+<h3>
+
+Exercise
+
+</h3>
+
+
+<p>
+
+Lifestyle guidance
+
+</p>
+
+
+</div>
+
+
+
+
+
+<div class="feature">
+
+💧
+
+<h3>
+
+Hydration
+
+</h3>
+
+
+<p>
+
+Smart reminders
+
+</p>
+
+
+</div>
+
+
+
+
+
+<div class="feature">
+
+😴
+
+<h3>
+
+Sleep
+
+</h3>
+
+
+<p>
+
+Sleep improvement
+
+</p>
+
+
+</div>
+
+
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<!-- AI CHAT -->
+
+
+<section>
+
+
+<h2 class="title">
+
+Abhaya AI Assistant
+
+</h2>
+
+
+
+
+<div class="chat">
+
+
+<div class="bot">
+
+Hello 🌸
+
+<br>
+
+I am Abhaya AI.
+
+Ask me about periods, PCOS and wellness.
+
+</div>
+
+
+
+
+<div id="reply">
+
+AI response will appear here
+
+</div>
+
+
+
+
+
+<input id="question" placeholder="Ask your question">
+
+
+
+<button onclick="chat()">
+
+Send
+
+</button>
+
+
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<!-- COMMUNITY -->
+
+
+<section id="community">
+
+
+<h2 class="title">
+
+Abhaya Community
+
+</h2>
+
+
+
+<div class="community-grid">
+
+
+<div class="community-card">
+
+💗
+
+<h3>
+
+PCOS Journey Support
+
+</h3>
+
+
+<p>
+
+Connect and share experiences.
+
+</p>
+
+
+</div>
+
+
+
+
+
+<div class="community-card">
+
+🌸
+
+<h3>
+
+Period Awareness
+
+</h3>
+
+
+<p>
+
+Learn scientific information.
+
+</p>
+
+
+</div>
+
+
+
+
+
+<div class="community-card">
+
+✨
+
+<h3>
+
+Women's Wellness Stories
+
+</h3>
+
+
+<p>
+
+Inspiring health journeys.
+
+</p>
+
+
+</div>
+
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<!-- HEALTH VAULT -->
+
+
+<section>
+
+
+<h2 class="title">
+
+Health Vault 🔐
+
+</h2>
+
+
+
+
+<div class="vault-grid">
+
+
+<div class="vault-card">
+
+📄
+
+<h3>
+
+Medical Reports
+
+</h3>
+
+</div>
+
+
+
+<div class="vault-card">
+
+💊
+
+<h3>
+
+Prescriptions
+
+</h3>
+
+</div>
+
+
+
+<div class="vault-card">
+
+📊
+
+<h3>
+
+Health History
+
+</h3>
+
+</div>
+
+
+
+<div class="vault-card">
+
+🔒
+
+<h3>
+
+Secure Storage
+
+</h3>
+
+</div>
+
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+
+<!-- EXPERTS -->
+
+
+<section id="experts">
+
+
+<h2 class="title">
+
+Healthcare Experts
+
+</h2>
+
+
+
+<div class="cards">
+
+
+
+<div class="feature">
+
+👩‍⚕️
+
+<h3>
+
+Gynecologist
+
+</h3>
+
+
+<button>
+
+Consult
+
+</button>
+
+
+</div>
+
+
+
+
+
+<div class="feature">
+
+🥗
+
+<h3>
+
+Nutritionist
+
+</h3>
+
+
+<button>
+
+Consult
+
+</button>
+
+
+</div>
+
+
+
+
+
+<div class="feature">
+
+🧠
+
+<h3>
+
+Therapist
+
+</h3>
+
+
+<button>
+
+Consult
+
+</button>
+
+
+</div>
+
+
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<!-- ECO -->
+
+
+<section>
+
+
+<h2 class="title">
+
+Eco Period Initiative 🌱
+
+</h2>
+
+
+
+<div class="eco">
+
+
+
+<div>
+
+🌱
+
+<h3>
+
+Sustainable Products
+
+</h3>
+
+</div>
+
+
+
+<div>
+
+💗
+
+<h3>
+
+Healthy Women
+
+</h3>
+
+</div>
+
+
+
+
+<div>
+
+🌍
+
+<h3>
+
+Healthy Planet
+
+</h3>
+
+</div>
+
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+
+<!-- PREMIUM -->
+
+
+<section>
+
+
+<div class="premium">
+
+
+<h1>
+
+Abhaya Premium
+
+</h1>
+
+
+
+<p>
+
+Advanced AI insights,
+doctor consultations,
+personalized health reports.
+
+</p>
+
+
+
+<h2>
+
+₹99/month
+
+</h2>
+
+
+
+<button>
+
+Upgrade
+
+</button>
+
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+
+<footer>
+
+
+🌸 Project Abhaya
+
+<br>
+
+AI Powered Women's Healthcare Ecosystem
+
+
+</footer>
+
+
+
+
+
+<script src="script.js"></script>
+
+
+</body>
+
+</html>
