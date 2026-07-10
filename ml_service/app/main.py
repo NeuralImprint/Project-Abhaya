@@ -2,10 +2,12 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 from typing import List, Dict
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 import os
 
 from ml_service.app.services.analytics import CycleEngine
+from ml_service.app.services.recommendations import WellnessEngine
 
 app = FastAPI(
     title="Project Abhaya AI/ML Engine",
@@ -13,6 +15,12 @@ app = FastAPI(
     version="1.0.0"
 )
 
+# Initialize the next-gen GenAI Client 
+# (It automatically reads the GEMINI_API_KEY environment variable)
+ai_client = genai.Client()
+
+
+# --- DATA SCHEMAS ---
 
 class PCOSAssessmentInput(BaseModel):
     age: int = Field(..., ge=13, le=50)
@@ -28,9 +36,16 @@ class ChatMessage(BaseModel):
 class CycleHistoryInput(BaseModel):
     history: List[Dict[str, str]]
 
+class RecommendationInput(BaseModel):
+    day_in_cycle: int = Field(..., ge=1, le=45)
+
+
+# --- ROUTE ENDPOINTS ---
+
 @app.get("/")
 def read_root():
     return {"status": "healthy", "service": "Project Abhaya ML Core API"}
+
 
 @app.post("/api/predict/pcos-risk")
 async def evaluate_pcos_risk(data: PCOSAssessmentInput):
@@ -47,19 +62,35 @@ async def evaluate_pcos_risk(data: PCOSAssessmentInput):
         "message": "AI-generated risk index. Consult a certified gynecologist for medical confirmation."
     }
 
+
 @app.post("/api/chat/abhaya-bot")
 async def consult_chatbot(payload: ChatMessage):
     try:
-        system_instruction = (
-            "You are Abhaya AI, a supportive, safe, empathetic, and professional AI companion "
-            "for women's reproductive health wellness. Provide informative answers, break down period myths, "
-            "and focus on stress reduction."
+        # Define persona constraints using the new SDK's config structure
+        config = types.GenerateContentConfig(
+            system_instruction=(
+                "You are Abhaya AI, a supportive, safe, empathetic, and professional AI companion "
+                "for women's reproductive health wellness. Provide informative answers, break down period myths, "
+                "and focus on stress reduction."
+            ),
+            temperature=0.7
         )
-        model = genai.GenerativeModel(model_name="gemini-1.5-flash", system_instruction=system_instruction)
-        response = model.generate_content(payload.message)
+        
+        # Request generation using the modern Gemini model index
+        response = ai_client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=payload.message,
+            config=config
+        )
+        
         return {"response": response.text}
+        
     except Exception as e:
-        return {"response": f"[Fallback] Received message: '{payload.message}'. Configure GEMINI_API_KEY to test active LLM chat."}
+        # Fallback safeguard prints the raw exception if environmental API keys are missing
+        return {
+            "response": f"[Fallback] Received message: '{payload.message}'. Configure GEMINI_API_KEY environment variable. Error trace: {str(e)}"
+        }
+
 
 @app.post("/api/analytics/cycle-summary")
 async def get_cycle_summary(data: CycleHistoryInput):
@@ -68,3 +99,11 @@ async def get_cycle_summary(data: CycleHistoryInput):
         return metrics
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Data processing error: {str(e)}")
+
+
+@app.post("/api/analytics/recommendations")
+async def get_phase_recommendations(data: RecommendationInput):
+    try:
+        return WellnessEngine.get_recommendations(data.day_in_cycle)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Recommendation pipeline error: {str(e)}")
