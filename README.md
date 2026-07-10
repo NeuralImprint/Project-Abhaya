@@ -61,3 +61,24 @@ Existing healthcare applications provide only basic tracking and fail to deliver
 
 ---
 
+# ✨ Features
+
+## 🌸 Smart Menstrual Tracker
+
+- Cycle prediction
+- Period reminder
+- Ovulation prediction
+- Fertility window
+- Cycle history
+
+---
+
+## 🤖 AI Health Assessment
+
+- Personalized health questionnaire
+- PCOS risk estimation
+- AI wellness score
+- Lifestyle recommendations
+- Personalized health insights
+
+---
