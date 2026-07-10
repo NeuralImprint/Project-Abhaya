@@ -217,3 +217,148 @@ async function chat(){
 
 
 }
+// ===============================
+// COMMUNITY PILLARS DATA FETCHER
+// ===============================
+
+async function openCommunitySection(category) {
+    let grid = document.querySelector(".community-grid");
+    if (!grid) return;
+
+    // Save the original layout structure so we can restore it later
+    if (!window.originalCommunityHTML) {
+        window.originalCommunityHTML = grid.innerHTML;
+    }
+
+    grid.innerHTML = `
+    <div style="grid-column: 1 / -1; text-align: center; padding: 40px 0;">
+        <h3>🌸 Loading Abhaya Community Feed...</h3>
+    </div>`;
+
+    try {
+        const response = await fetch(`http://127.0.0.1:8000/api/community/${category}`);
+        const data = await response.json();
+        
+        let feedHTML = `
+        <div style="grid-column: 1 / -1; width: 100%;">
+            <button onclick="document.querySelector('.community-grid').innerHTML = window.originalCommunityHTML" style="margin-bottom: 20px; background: #f1e7ff; color: #5b3c70; padding: 8px 16px; border: none; border-radius: 20px; cursor: pointer; font-weight: 500;">🔙 Back to Categories</button>
+            <div style="display: flex; flex-direction: column; gap: 15px;">
+        `;
+
+        data.feed.forEach(post => {
+            feedHTML += `
+                <div style="background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); border: 1px solid #fcf0f7;">
+                    <h4 style="color: #5b3c70; margin-bottom: 8px;">${post.title}</h4>
+                    <p style="font-size: 14px; color: #555; line-height: 1.6;">${post.content}</p>
+                    <small style="color: #a08da3; display: block; margin-top: 10px; font-style: italic;">By: ${post.author}</small>
+                </div>
+            `;
+        });
+
+        feedHTML += `</div></div>`;
+        grid.innerHTML = feedHTML;
+
+    } catch (error) {
+        grid.innerHTML = `
+        <div style="grid-column: 1 / -1; text-align: center; padding: 20px; color: #ef4444;">
+            ⚠️ Unable to load feed. Ensure your FastAPI application server is running.
+            <br><br>
+            <button onclick="document.querySelector('.community-grid').innerHTML = window.originalCommunityHTML" style="background: #eee; padding: 5px 15px; border: none; border-radius: 5px; cursor: pointer;">Close</button>
+        </div>`;
+    }
+}
+// ===============================
+// DYNAMIC MONGODB COMMUNITY REGISTRY
+// ===============================
+
+async function openCommunitySection(category) {
+    let grid = document.querySelector(".community-grid");
+    if (!grid) return;
+
+    if (!window.originalCommunityHTML) {
+        window.originalCommunityHTML = grid.innerHTML;
+    }
+
+    grid.innerHTML = `
+    <div style="grid-column: 1 / -1; text-align: center; padding: 40px 0;">
+        <h3>🌸 Fetching Community Insights from MongoDB...</h3>
+    </div>`;
+
+    try {
+        const response = await fetch(`http://127.0.0.1:8000/api/community/${category}`);
+        const data = await response.json();
+        
+        let feedHTML = `
+        <div style="grid-column: 1 / -1; width: 100%; text-align: left;">
+            <button onclick="document.querySelector('.community-grid').innerHTML = window.originalCommunityHTML" style="margin-bottom: 25px; background: #f1e7ff; color: #5b3c70; padding: 10px 20px; border: none; border-radius: 20px; cursor: pointer; font-weight: 600;">🔙 Back to Categories</button>
+            
+            <div style="background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(10px); padding: 25px; border-radius: 25px; margin-bottom: 30px; border: 2px dashed #ffd7ea;">
+                <h4 style="color: #5b3c70; margin-bottom: 15px;">🌸 Share Your Experience Anonymously</h4>
+                <input id="post-title" type="text" placeholder="Topic Title (e.g., My Lifestyle Routine)" style="width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #ddd; margin-bottom: 12px; font-family: inherit;">
+                <textarea id="post-content" placeholder="Type your experience here... Your contribution will be safely shared across the network." rows="3" style="width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #ddd; margin-bottom: 15px; font-family: inherit; resize: vertical;"></textarea>
+                <button onclick="submitCommunityPost('${category}')" style="background: #ff5c9a; color: white; border: none; padding: 10px 24px; border-radius: 20px; font-weight: 600; cursor: pointer;">Post to Portal 🚀</button>
+            </div>
+
+            <div id="live-posts-container" style="display: flex; flex-direction: column; gap: 20px;">
+        `;
+
+        if (data.feed.length === 0) {
+            feedHTML += `
+                <div style="text-align: center; color: #a08da3; padding: 20px;">
+                    🌱 No experiences shared yet. Be the first to start the conversation!
+                </div>`;
+        } else {
+            data.feed.forEach(post => {
+                feedHTML += `
+                    <div style="background: white; padding: 25px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.02); border: 1px solid #fff0f7;">
+                        <h4 style="color: #ff5c9a; font-size: 17px; margin-bottom: 8px;">${post.title}</h4>
+                        <p style="font-size: 14px; color: #5b4963; line-height: 1.6;">${post.content}</p>
+                        <small style="color: #a08da3; display: block; margin-top: 12px; font-style: italic;">Shared by: ${post.author}</small>
+                    </div>`;
+            });
+        }
+
+        feedHTML += `</div></div>`;
+        grid.innerHTML = feedHTML;
+
+    } catch (error) {
+        grid.innerHTML = `
+        <div style="grid-column: 1 / -1; text-align: center; padding: 30px; color: #ef4444;">
+            ⚠️ Problem establishing database handshake. Ensure your Uvicorn server is up.
+            <br><br>
+            <button onclick="document.querySelector('.community-grid').innerHTML = window.originalCommunityHTML" style="background: #eee; padding: 6px 18px; border: none; border-radius: 8px; cursor: pointer;">Close</button>
+        </div>`;
+    }
+}
+
+async function submitCommunityPost(category) {
+    const titleInput = document.getElementById("post-title");
+    const contentInput = document.getElementById("post-content");
+
+    const title = titleInput.value.trim();
+    const content = contentInput.value.trim();
+
+    if (!title || !content) {
+        alert("Please provide both a title and details of your experience.");
+        return;
+    }
+
+    try {
+        const response = await fetch(`http://127.0.0.1:8000/api/community/${category}/post`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ title: title, content: content })
+        });
+
+        if (response.ok) {
+            // Clean out text inputs and instantly refresh view to show the new MongoDB entry
+            titleInput.value = "";
+            contentInput.value = "";
+            openCommunitySection(category);
+        } else {
+            alert("The server encountered an error processing your document collection post.");
+        }
+    } catch (error) {
+        alert("Network routing error. Unable to write object entry to remote MongoDB storage.");
+    }
+}
