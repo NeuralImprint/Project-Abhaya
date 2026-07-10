@@ -48,7 +48,7 @@ function closeAssessment(){
 // ===============================
 
 
-function generateReport(){
+async function generateReport(){
 
 
 
@@ -86,7 +86,102 @@ function generateReport(){
 
     if(age===""){
 
-        alert("Please enter your age");
+        alert("Please enter age");
+
+        return;
+
+    }
+
+
+
+    let card =
+    document.querySelector(".assessment-card");
+
+
+    card.innerHTML=`
+    <div style="text-align:center; padding:40px 0;">
+       <h3>🌸 Abhaya AI Analysis...</h3>
+    </div>
+    `;
+
+    try {
+        const response = await fetch("http://127.0.0.1:8000/api/predict/pcos-risk", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                age: parseInt(age),
+                cycle_length_days: cycle === "regular" ? 28 : 35,
+                weight_gain_sudden: weight,
+                hair_growth_excessive: hair,
+                skin_darkening: acne,
+                mood_swings_severity: pain ? 4 : 2
+            })
+        });
+
+        const result = await response.json();
+        const score = Math.round((1 - result.pcos_risk_probability) * 100);
+
+        card.innerHTML=`
+        <h2>🌸 Abhaya AI Insights</h2>
+        <div class="health-score">${score}%</div>
+        <h3 style="text-align:center">Overall Wellness Score</h3>
+        <br>
+        <p>🧬 Classification: <b>${result.risk_classification}</b></p>
+        <br>
+        <p>🩺 ${result.message}</p>
+        <button onclick="closeAssessment()">View Dashboard</button>
+        `;
+
+        document.getElementById("score").innerHTML = `${score}%`;
+        const fillDegrees = Math.round(result.pcos_risk_probability * 360);
+        let activeColor = "#22c55e";
+        if (result.risk_classification === "Moderate") activeColor = "#f59e0b";
+        if (result.risk_classification === "High") activeColor = "#ef4444";
+        
+        const meter = document.querySelector(".risk-meter");
+        const label = document.querySelector(".low-risk");
+        if(meter) meter.style.background = `conic-gradient(${activeColor} 0deg, ${activeColor} ${fillDegrees}deg, #eee ${fillDegrees}deg)`;
+        if(label) {
+            label.innerHTML = `${result.risk_classification} Risk`;
+            label.style.color = activeColor;
+        }
+    } catch (error) {
+        alert("Failed to connect to backend service.");
+    }
+}
+
+
+
+
+
+
+
+
+// ===============================
+// LIVE AI CHATBOT 
+// ===============================
+
+
+async function chat(){
+
+
+
+    let input =
+    document.getElementById("question");
+
+
+    let reply =
+    document.getElementById("reply");
+
+
+
+    let question =
+    input.value.trim();
+
+
+
+
+    if(question===""){
 
         return;
 
@@ -95,581 +190,29 @@ function generateReport(){
 
 
 
-
-
-
-    let score = 100;
-
+    reply.innerHTML =
+    "🌸 Abhaya AI is thinking...";
 
 
 
 
-    if(cycle==="irregular"){
 
-        score -= 20;
-
-    }
-
-
-    if(acne){
-
-        score -= 8;
-
-    }
-
-
-    if(hair){
-
-        score -= 8;
-
-    }
-
-
-    if(pain){
-
-        score -= 15;
-
-    }
-
-
-    if(weight){
-
-        score -= 10;
-
+    try {
+        const response = await fetch("http://127.0.0.1:8000/api/chat/abhaya-bot", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message: question })
+        });
+        const data = await response.json();
+        reply.innerHTML = data.response;
+    } catch (error) {
+        reply.innerHTML = " Connection error with server.";
     }
 
 
 
 
-
-    if(score < 35){
-
-        score = 35;
-
-    }
-
-
-
-
-
-
-
-    let risk;
-
-
-
-    if(score >= 80){
-
-        risk="Low";
-
-    }
-
-    else if(score >= 55){
-
-        risk="Moderate";
-
-    }
-
-    else{
-
-        risk="High";
-
-    }
-
-
-
-
-
-
-
-
-
-    document.querySelector(".assessment-card").innerHTML = `
-
-
-    <h2>
-    🌸 Abhaya AI Report
-    </h2>
-
-
-
-    <div class="health-score">
-
-    ${score}%
-
-    </div>
-
-
-
-    <h3 style="text-align:center">
-
-    Wellness Score
-
-    </h3>
-
-
-
-    <br>
-
-
-
-    <p>
-    🧬 PCOS Risk:
-    <b>${risk}</b>
-    </p>
-
-
-
-    <p>
-    🩸 Cycle Health:
-    <b>
-    ${
-        cycle==="regular"
-        ?
-        "Healthy"
-        :
-        "Needs Monitoring"
-    }
-    </b>
-    </p>
-
-
-
-
-    <br>
-
-
-    <h3>
-
-    Personalized Advice
-
-    </h3>
-
-
-
-    <p>
-    🥗 Maintain hormone-friendly nutrition
-    </p>
-
-
-    <p>
-    💧 Stay hydrated
-    </p>
-
-
-    <p>
-    🏃 Exercise regularly
-    </p>
-
-
-    <p>
-    🧘 Practice stress management
-    </p>
-
-
-
-    <button onclick="closeAssessment()">
-
-    View Dashboard
-
-    </button>
-
-
-
-
-    <button 
-    onclick="resetAssessment()"
-    style="
-    background:#f1e7ff;
-    color:#5b3c70;
-    margin-top:10px;
-    ">
-
-    🔄 Retake Analysis
-
-    </button>
-
-
-
-    `;
-
-
-
-
-
-    updateDashboardScore(score);
-
-
-
-}
-
-
-
-
-
-
-
-
-
-// ===============================
-// RESET ASSESSMENT
-// ===============================
-
-
-function resetAssessment(){
-
-
-
-document.querySelector(".assessment-card").innerHTML = `
-
-
-<h2>
-🌸 Health Assessment
-</h2>
-
-
-
-<label>
-Age
-</label>
-
-
-<input 
-id="age"
-type="number"
-placeholder="Enter your age">
-
-
-
-
-
-<label>
-Cycle Pattern
-</label>
-
-
-
-<select id="cycle">
-
-
-<option value="regular">
-
-Regular
-
-</option>
-
-
-<option value="irregular">
-
-Irregular
-
-</option>
-
-
-</select>
-
-
-
-
-
-<label>
-Symptoms
-</label>
-
-
-
-
-<div class="symptom">
-
-<input id="acne" type="checkbox">
-
-Acne
-
-</div>
-
-
-
-<div class="symptom">
-
-<input id="hair" type="checkbox">
-
-Hair Loss
-
-</div>
-
-
-
-
-<div class="symptom">
-
-<input id="pain" type="checkbox">
-
-Severe Pain
-
-</div>
-
-
-
-
-<div class="symptom">
-
-<input id="weight" type="checkbox">
-
-Weight Changes
-
-</div>
-
-
-
-
-<button onclick="generateReport()">
-
-Generate AI Report
-
-</button>
-
-
-`;
-
-
-
-}
-
-
-
-
-
-
-
-
-
-// ===============================
-// DASHBOARD SCORE ANIMATION
-// ===============================
-
-
-
-function updateDashboardScore(finalScore){
-
-
-
-let scoreElement =
-document.getElementById("score");
-
-
-
-let current=0;
-
-
-
-let animation =
-setInterval(()=>{
-
-
-current++;
-
-
-scoreElement.innerHTML =
-current+"%";
-
-
-
-if(current>=finalScore){
-
-clearInterval(animation);
-
-}
-
-
-
-},15);
-
-
-
-}
-
-
-
-
-
-
-
-
-
-// ===============================
-// AI CHATBOT
-// ===============================
-
-
-
-function chat(){
-
-
-
-let input =
-document.getElementById("question");
-
-
-
-let question =
-input.value.toLowerCase();
-
-
-
-let reply =
-document.getElementById("reply");
-
-
-
-
-if(question===""){
-
-return;
-
-}
-
-
-
-
-reply.innerHTML =
-"🌸 Abhaya AI is thinking...";
-
-
-
-
-
-setTimeout(()=>{
-
-
-
-let answer;
-
-
-
-if(question.includes("pcos")){
-
-
-answer =
-"PCOS is a hormonal condition. Common signs include irregular periods, acne, weight changes and hair loss. Early detection helps manage health better.";
-
-}
-
-
-
-else if(question.includes("period")){
-
-
-answer =
-"Tracking your cycle helps understand patterns, predict periods and identify unusual changes.";
-
-}
-
-
-
-else if(question.includes("diet")){
-
-
-answer =
-"A balanced diet with proteins, iron-rich foods, vegetables and hydration supports hormonal wellness.";
-
-}
-
-
-
-else if(question.includes("pain")){
-
-
-answer =
-"Severe menstrual pain should not be ignored. Consider consulting a healthcare professional.";
-
-}
-
-
-
-else{
-
-
-answer =
-"I can help you with menstrual health, PCOS awareness, wellness, nutrition and lifestyle guidance 🌸";
-
-}
-
-
-
-
-
-reply.innerHTML=answer;
-
-
-
-},1000);
-
-
-
-
-input.value="";
-
-
-
-}
-
-
-
-
-
-
-
-
-
-// ===============================
-// INITIAL SCORE ANIMATION
-// ===============================
-
-
-window.onload=function(){
-
-
-
-let scoreElement =
-document.getElementById("score");
-
-
-
-if(scoreElement){
-
-
-
-let value=0;
-
-
-
-let animation =
-setInterval(()=>{
-
-
-value++;
-
-
-scoreElement.innerHTML =
-value+"%";
-
-
-
-if(value>=92){
-
-
-clearInterval(animation);
-
-
-}
-
-
-
-},20);
-
-
-
-}
+    input.value="";
 
 
 
