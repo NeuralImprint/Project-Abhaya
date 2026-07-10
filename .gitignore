@@ -1,4 +1,30 @@
-venv/ 
-__pycache__/ 
-*.pyc 
-.vscode/ 
+# Python
+venv/
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+
+# Environment
+.env
+*.env.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Docker
+*.log
+
+# Node (if added later)
+node_modules/
+.Project_Abhaya_Generalized_Report(1)
