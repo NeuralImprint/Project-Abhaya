@@ -1,5 +1,6 @@
-# ml_service/app/main.py
+
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware 
 from pydantic import BaseModel, Field
 from typing import List, Dict
 from google import genai
@@ -14,10 +15,22 @@ app = FastAPI(
     description="Microservice providing predictive health and generative wellness capabilities.",
     version="1.0.0"
 )
-
-# Initialize the next-gen GenAI Client 
-# (It automatically reads the GEMINI_API_KEY environment variable)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allows any local frontend port to connect during development
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 ai_client = genai.Client()
+
+import motor.motor_asyncio
+
+# Replace the connection string below with your real cluster string from MongoDB Atlas
+MONGO_DETAILS = os.getenv("MONGO_DETAILS", "mongodb://localhost:27017")
+client = motor.motor_asyncio.AsyncIOMotorClient(MONGO_DETAILS)
+db = client.abhaya_database
+community_collection = db.get_collection("community_posts")
 
 
 # --- DATA SCHEMAS ---
@@ -29,6 +42,58 @@ class PCOSAssessmentInput(BaseModel):
     hair_growth_excessive: bool
     skin_darkening: bool
     mood_swings_severity: int = Field(..., ge=1, le=5)
+
+# --- IN-MEMORY COMMUNITY STORAGE ---
+community_feeds = {
+    "pcos": [
+        {"title": "🌸 Managing Insulin Resistance", "content": "Focusing on a low-glycemic diet and strength training completely shifted my energy levels and balanced my cycles.", "author": "Anonymous"},
+        {"title": "💗 You Are Not Alone", "content": "Getting diagnosed at 19 was terrifying, but tracking my symptoms and pacing my lifestyle helped me take back control.", "author": "Anonymous"}
+    ],
+    "awareness": [
+        {"title": "🔬 Understanding Phase Changes", "content": "The menstrual cycle has four key phases: Menstrual, Follicular, Ovulatory, and Luteal. Estrogen peaks right before ovulation.", "author": "Abhaya Medical Team"},
+        {"title": "🩸 Myth Busting: Irregular Periods", "content": "An occasional irregular cycle is normal due to temporary stress or travel, but consistent variations warrant tracking and professional insight.", "author": "Abhaya Medical Team"}
+    ],
+    "stories": [
+        {"title": "✨ My Journey to Hormone Balance", "content": "After years of struggling with cystic acne and fatigue, lifestyle modifications helped regulate my cycles naturally.", "author": "Anonymous"},
+        {"title": "🌱 Embracing Sustainable Wellness", "content": "Switching to organic menstrual care products and stress monitoring reduced my cyclical pain and anxiety.", "author": "Anonymous"}
+    ]
+}
+
+class CommunityPostInput(BaseModel):
+    title: str
+    content: str
+
+
+class NewCommunityPost(BaseModel):
+    title: str
+    content: str
+
+@app.get("/api/community/{category}")
+async def fetch_live_community_feed(category: str):
+    posts = []
+    # Query MongoDB for the last 20 posts matching the selected category
+    cursor = community_collection.find({"category": category}).sort("_id", -1).limit(20)
+    async for document in cursor:
+        posts.append({
+            "title": document["title"],
+            "content": document["content"],
+            "author": document.get("author", "Anonymous User")
+        })
+    return {"feed": posts}
+
+@app.post("/api/community/{category}/post")
+async def save_live_community_post(category: str, data: NewCommunityPost):
+    new_document = {
+        "category": category,
+        "title": data.title,
+        "content": data.content,
+        "author": "Anonymous User"
+    }
+    # Insert the document directly into your online cluster collection
+    result = await community_collection.insert_one(new_document)
+    if result.inserted_id:
+        return {"status": "success", "message": "Experience saved securely to the global cloud!"}
+    raise HTTPException(status_code=500, detail="Database write operation failed.")
 
 class ChatMessage(BaseModel):
     message: str
