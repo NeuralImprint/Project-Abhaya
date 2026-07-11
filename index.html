@@ -182,20 +182,38 @@
 <section id="community">
     <h2 class="title">Abhaya Community</h2>
     <div class="community-grid">
+        <!-- 1. PCOS Journey Board Trigger -->
         <div class="community-card" onclick="openCommunitySection('pcos')" style="cursor: pointer;">
             💗
             <h3>PCOS Journey Support</h3>
             <p>Connect and share experiences.</p>
         </div>
-        <div class="community-card" onclick="openCommunitySection('awareness')" style="cursor: pointer;">
+        
+        <!-- 2. Period Awareness Track Trigger -->
+        <div class="community-card" onclick="loadPeriodAwareness('hygiene')" style="cursor: pointer;">
             🌸
             <h3>Period Awareness</h3>
             <p>Learn scientific information.</p>
         </div>
-        <div class="community-card" onclick="openCommunitySection('stories')" style="cursor: pointer;">
+        
+        <!-- 3. Women's Wellness Stories Trigger -->
+        <div class="community-card" onclick="loadWellnessStories()" style="cursor: pointer;">
             ✨
             <h3>Women's Wellness Stories</h3>
             <p>Inspiring health journeys.</p>
+        </div>
+    </div>
+
+    <!-- CLEANLY MAPPED STRUCTURE FOR SECTIONS & INTERACTIVE FORMS -->
+    <div class="container" style="margin-top: 30px;">
+        <div id="community-content-display"></div>
+        
+        <div id="awareness-content-display" style="margin-top: 25px;">
+            <!-- Automated tabs and articles load here -->
+        </div>
+        
+        <div id="stories-content-display" style="margin-top: 25px;">
+            <!-- Automated tracking input forms and live database stories render here -->
         </div>
     </div>
 </section>
